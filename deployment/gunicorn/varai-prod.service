@@ -1,0 +1,19 @@
+[Unit]
+Description=scriptcrew Production Gunicorn daemon
+After=network.target
+
+[Service]
+User=root
+Group=www-data
+WorkingDirectory=/root/VAR_AI/src
+Environment="PATH=/root/VAR_AI/venv/bin"
+ExecStart=/root/VAR_AI/venv/bin/gunicorn --config /root/VAR_AI/deployment/gunicorn/gunicorn_prod.py scriptcrew.wsgi:application
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target 

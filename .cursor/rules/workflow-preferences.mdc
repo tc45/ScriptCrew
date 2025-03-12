@@ -1,0 +1,45 @@
+---
+description: Workflow optimization preferences.
+globs: 
+alwaysApply: false
+---
+# Workflow Preferences
+
+## Development Process
+- Implement features in a modular, incremental approach
+- Start with core functionality before adding advanced features
+- Follow the roadmap order when implementing features
+- Create separate branches for each feature or component
+
+## Implementation Order
+1. Setup Django project structure and database models
+2. Implement basic CRUD functionality for Clients and Projects
+3. Develop the parser framework and device-specific parsers
+4. Build the inventory data models and storage
+5. Integrate CrewAI for report generation
+6. Implement the user interface and admin dashboards
+7. Add export functionality and reporting features
+8. Setup deployment and CI/CD pipeline
+
+## Code Generation Guidelines
+- Generate complete, working implementations (no TODOs)
+- Include comprehensive error handling
+- Add appropriate logging statements
+- Provide sample test cases alongside new components
+- Include docstrings and type hints
+- When generating model code, include sample migrations
+- For parsers, include sample configuration snippets for testing
+
+## Documentation Requirements
+- Document all API endpoints
+- Add comments for complex logic
+- Include README.md files for each app directory
+- Document environment variables and configuration options
+- Provide example usage for parser modules
+
+## Project Structure
+- Organize code into Django apps based on functional domains
+- Keep parser implementations in dedicated modules
+- Place CrewAI definitions in a separate package
+- Store common utilities in a shared module
+- Maintain settings.py with environment variable configuration

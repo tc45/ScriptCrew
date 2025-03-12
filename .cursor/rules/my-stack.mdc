@@ -1,0 +1,36 @@
+---
+description: Technical Stack for VarAI
+globs: 
+alwaysApply: false
+---
+# Tech Stack
+
+This project uses the following technologies:
+
+## Backend
+- Django (latest LTS version) for web framework
+- PostgreSQL for database
+- Poetry for dependency management
+- Django REST Framework for API endpoints
+- Celery for background tasks
+
+## Network Parser Components
+- Custom modular parser framework with device-specific implementations
+- Support for multiple network device types (Cisco IOS, ASA, Nexus, FortiGate, FortiSwitch, JunOS)
+
+## AI Components
+- CrewAI for orchestrating AI-powered workflows
+- Langtrace for AI process tracking and debugging
+- Integration with OpenAI or similar LLM endpoints
+
+## Frontend
+- Django Templates with Bootstrap for basic UI
+- JavaScript for enhanced interactions
+- Chart.js for data visualization
+
+## Deployment
+- Docker and Docker Compose for containerization
+- GitHub Actions for CI/CD
+- Environment-based configuration
+
+When implementing code for this project, ensure all components follow this stack architecture and leverage the established technologies rather than introducing alternatives without discussion.

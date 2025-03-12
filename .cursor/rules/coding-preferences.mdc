@@ -1,0 +1,49 @@
+---
+description: Coding guidelines
+globs: 
+alwaysApply: true
+---
+# Coding Preferences
+
+## Django-Specific Guidelines
+- Use src/ as the root directory for the project
+- Follow Django's app-based structure with clear separation of concerns
+- Use class-based views over function-based views where appropriate
+- Implement Django's built-in authentication and permission system
+- Create custom managers for complex database queries
+- All app specific templates should be stored in apps/<app_name>/templates/<app_name>
+
+## Python Guidelines
+- Use Python 3.9+ features
+- Use snake_case for variable and function names
+- Use tabs for indentation in Python files
+- Use PascalCase for class names
+- Include type hints for function parameters and return values
+- Write docstrings for all classes and methods following Google style
+- Maximum line length of 100 characters
+
+## Database Guidelines
+- Define models in models.py with appropriate field types and constraints
+- Include on_delete behavior for all ForeignKey fields
+- Use Django migrations for all database changes
+- Add Meta classes to models with ordering and verbose names
+- Include created_at/updated_at timestamps on models
+- Track all database objects in a Mermaid diagram
+
+## Parser Guidelines
+- Implement abstract base classes for parser interfaces
+- Each device type gets its own parser implementation class
+- Include thorough error handling and validation
+- Log parsing failures and exceptions
+
+## CrewAI Guidelines
+- Define each agent's role and responsibilities clearly
+- Use structured prompts for consistent AI outputs
+- Include fallback mechanisms for API failures
+- Track all AI interactions via Langtrace
+
+## Testing Guidelines
+- Write unit tests for all parser implementations
+- Include integration tests for CrewAI workflows
+- Test for edge cases in configuration parsing
+- Maintain test coverage above 80%

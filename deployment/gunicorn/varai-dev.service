@@ -1,0 +1,19 @@
+[Unit]
+Description=scriptcrew Development Gunicorn daemon
+After=network.target
+
+[Service]
+User=root
+Group=www-data
+WorkingDirectory=/root/VAR_AI/src
+Environment="PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+Environment="VIRTUAL_ENV=/root/.cache/pypoetry/virtualenvs/scriptcrew-py3.10"
+Environment="POETRY_HOME=/root/.local/share/pypoetry"
+ExecStart=/usr/bin/gunicorn --config /root/VAR_AI/deployment/gunicorn/gunicorn_dev.py scriptcrew.wsgi:application
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target 
