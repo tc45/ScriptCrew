@@ -1,0 +1,204 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Crews - AI Workflow Management{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header Section -->
+    <div class="mb-4">
+        <h1 class="display-5 fw-bold">Crews</h1>
+        <p class="lead">Intelligent AI-powered workflow management</p>
+    </div>
+    
+    {% if user.is_authenticated %}
+        <!-- Content for authenticated users -->
+        
+        <!-- Action Buttons -->
+        <div class="mb-4">
+            <a href="{% url 'crew:crew_create' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-2"></i>
+                Add New Crew Instance
+            </a>
+        </div>
+        
+        <!-- Navigation Cards -->
+        <div class="row g-4 mb-5">
+            <!-- Crews Card -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="text-center mb-3">
+                            <div class="bg-light rounded-circle d-inline-flex p-3 mb-2">
+                                <i class="bi bi-people fs-3 text-primary"></i>
+                            </div>
+                        </div>
+                        <h5 class="card-title text-center">Crews</h5>
+                        <p class="card-text text-center">Manage your AI workflow crews</p>
+                        <div class="text-center mt-3">
+                            <a href="{% url 'crew:crew_list' %}" class="btn btn-outline-primary">
+                                View Crews
+                                <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agents Card -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="text-center mb-3">
+                            <div class="bg-light rounded-circle d-inline-flex p-3 mb-2">
+                                <i class="bi bi-person-badge fs-3 text-success"></i>
+                            </div>
+                        </div>
+                        <h5 class="card-title text-center">Agents</h5>
+                        <p class="card-text text-center">Manage AI agents and their roles</p>
+                        <div class="text-center mt-3">
+                            <a href="{% url 'crew:agent_list' %}" class="btn btn-outline-success">
+                                View Agents
+                                <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tasks Card -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="text-center mb-3">
+                            <div class="bg-light rounded-circle d-inline-flex p-3 mb-2">
+                                <i class="bi bi-list-check fs-3 text-info"></i>
+                            </div>
+                        </div>
+                        <h5 class="card-title text-center">Tasks</h5>
+                        <p class="card-text text-center">Manage AI workflow tasks</p>
+                        <div class="text-center mt-3">
+                            <a href="{% url 'crew:task_list' %}" class="btn btn-outline-info">
+                                View Tasks
+                                <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pipeline Card -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="text-center mb-3">
+                            <div class="bg-light rounded-circle d-inline-flex p-3 mb-2">
+                                <i class="bi bi-diagram-3 fs-3 text-warning"></i>
+                            </div>
+                        </div>
+                        <h5 class="card-title text-center">Pipeline</h5>
+                        <p class="card-text text-center">View execution flow and dependencies</p>
+                        <div class="text-center mt-3">
+                            <a href="{% url 'crew:pipeline_view' %}" class="btn btn-outline-warning">
+                                View Pipeline
+                                <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Activity Section -->
+        <div class="mt-4">
+            <h2 class="mb-3">Recent Activity</h2>
+            <div class="card">
+                <div class="card-body">
+                    <p class="text-muted">Recent crew execution activity will appear here</p>
+                </div>
+            </div>
+        </div>
+        
+    {% else %}
+        <!-- Content for unauthenticated users -->
+        <div class="row align-items-center mb-5">
+            <div class="col-lg-6">
+                <h2>What are Crews?</h2>
+                <p class="lead">Crews are AI-powered workflow orchestrators that help you automate complex tasks using multiple AI agents working together.</p>
+                
+                <h3 class="mt-4">Key Benefits</h3>
+                <ul class="list-group list-group-flush mb-4">
+                    <li class="list-group-item bg-transparent">
+                        <i class="bi bi-check-circle-fill text-success me-2"></i>
+                        Automate complex workflows with AI
+                    </li>
+                    <li class="list-group-item bg-transparent">
+                        <i class="bi bi-check-circle-fill text-success me-2"></i>
+                        Coordinate multiple agents with specialized roles
+                    </li>
+                    <li class="list-group-item bg-transparent">
+                        <i class="bi bi-check-circle-fill text-success me-2"></i>
+                        Build modular, reusable task pipelines
+                    </li>
+                    <li class="list-group-item bg-transparent">
+                        <i class="bi bi-check-circle-fill text-success me-2"></i>
+                        Track execution status and results
+                    </li>
+                </ul>
+                
+                <div class="d-grid gap-2 d-md-flex mt-4">
+                    <a href="{% url 'account_signup' %}" class="btn btn-primary btn-lg px-4 me-md-2">
+                        Register Now
+                    </a>
+                    <a href="{% url 'account_login' %}" class="btn btn-outline-secondary btn-lg px-4">
+                        Sign In
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 mt-4 mt-lg-0">
+                <img src="{% static 'crew/images/crew-illustration.svg' %}" alt="Crew Illustration" class="img-fluid rounded shadow">
+            </div>
+        </div>
+        
+        <!-- How It Works Section -->
+        <div class="mt-5">
+            <h2 class="text-center mb-4">How Crews Work</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <div class="bg-light rounded-circle d-inline-flex p-3 mb-3">
+                                <i class="bi bi-people-fill fs-1 text-primary"></i>
+                            </div>
+                            <h4>1. Create a Crew</h4>
+                            <p>Define your workflow and the agents who will participate in it</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <div class="bg-light rounded-circle d-inline-flex p-3 mb-3">
+                                <i class="bi bi-list-check fs-1 text-primary"></i>
+                            </div>
+                            <h4>2. Assign Tasks</h4>
+                            <p>Create tasks for your agents and define dependencies between them</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <div class="bg-light rounded-circle d-inline-flex p-3 mb-3">
+                                <i class="bi bi-lightning-fill fs-1 text-primary"></i>
+                            </div>
+                            <h4>3. Execute & Monitor</h4>
+                            <p>Run your workflow and track the results in real-time</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 

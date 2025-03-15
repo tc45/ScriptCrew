@@ -1,0 +1,215 @@
+%% Crew App Architecture Diagram
+
+graph TB
+    %% Main app components
+    subgraph "Crew App Architecture"
+        Models["Models"]
+        Views["Views"]
+        Templates["Templates"]
+        Execution["Execution Engine"]
+    end
+    
+    %% Model relationships
+    subgraph "Models"
+        User["User\n(Django Auth)"]
+        CrewInstance["CrewInstance\n---\nname\ndescription\nconfig (JSON)\nis_flow\nstatus\nowner (FK)\nparent_crew (FK)\nlast_executed"]
+        Agent["Agent\n---\nname\nrole\ncustom_role\ndescription\nbackstory\ngoals (JSON)\ntools (JSON)\nllm_config (JSON)\nallow_delegation\nverbose\ncrew (FK)"]
+        Task["Task\n---\nname\ndescription\ncrew (FK)\nagent (FK)\ndependencies\nstatus\nresults (JSON)"]
+        Execution["Execution\n---\ncrew (FK)\nstatus\nstarted_at\nended_at\nresults (JSON)"]
+        
+        %% Relationships
+        User -->|has many| CrewInstance
+        CrewInstance -->|parent of| CrewInstance
+        CrewInstance -->|has many| Agent
+        CrewInstance -->|has many| Task
+        Agent -->|assigned to| Task
+        CrewInstance -->|has many| Execution
+        Task -.->|depends on| Task
+    end
+    
+    %% Views structure
+    subgraph "Views"
+        %% Core Views
+        IndexView["CrewIndexView\n(Dashboard)"]
+        
+        %% Crew Views
+        CrewViews["Crew Management"]
+        CrewListView["CrewListView"]
+        CrewCreateView["CrewCreateView"]
+        CrewDetailView["CrewDetailView"]
+        CrewUpdateView["CrewUpdateView"]
+        CrewDeleteView["CrewDeleteView"]
+        
+        %% Agent Views
+        AgentViews["Agent Management"]
+        AgentListView["AgentListView"]
+        AgentCreateView["AgentCreateView"]
+        AgentDetailView["AgentDetailView"]
+        AgentUpdateView["AgentUpdateView"]
+        AgentDeleteView["AgentDeleteView"]
+        
+        %% Task Views
+        TaskViews["Task Management"]
+        TaskListView["TaskListView"]
+        TaskCreateView["TaskCreateView"]
+        TaskDetailView["TaskDetailView"]
+        TaskUpdateView["TaskUpdateView"]
+        TaskDeleteView["TaskDeleteView"]
+        
+        %% Pipeline Views
+        PipelineViews["Pipeline Management"]
+        PipelineView["PipelineView"]
+        ExecuteCrewView["ExecuteCrewView"]
+        StopCrewExecutionView["StopCrewExecutionView"]
+        ExecutionHistoryView["ExecutionHistoryView"]
+        
+        %% View Relationships
+        IndexView --> CrewViews
+        IndexView --> AgentViews
+        IndexView --> TaskViews
+        IndexView --> PipelineViews
+        
+        CrewViews --> CrewListView
+        CrewViews --> CrewCreateView
+        CrewViews --> CrewDetailView
+        CrewViews --> CrewUpdateView
+        CrewViews --> CrewDeleteView
+        
+        AgentViews --> AgentListView
+        AgentViews --> AgentCreateView
+        AgentViews --> AgentDetailView
+        AgentViews --> AgentUpdateView
+        AgentViews --> AgentDeleteView
+        
+        TaskViews --> TaskListView
+        TaskViews --> TaskCreateView
+        TaskViews --> TaskDetailView
+        TaskViews --> TaskUpdateView
+        TaskViews --> TaskDeleteView
+        
+        PipelineViews --> PipelineView
+        PipelineViews --> ExecuteCrewView
+        PipelineViews --> StopCrewExecutionView
+        PipelineViews --> ExecutionHistoryView
+    end
+    
+    %% Templates structure
+    subgraph "Templates"
+        %% Core Templates
+        IndexTemplate["index.html\n(Dashboard)"]
+        
+        %% Crew Templates
+        CrewTemplates["Crew Templates"]
+        CrewListTemplate["crew_list.html"]
+        CrewFormTemplate["crew_form.html"]
+        CrewDetailTemplate["crew_detail.html"]
+        CrewDeleteTemplate["crew_confirm_delete.html"]
+        
+        %% Agent Templates
+        AgentTemplates["Agent Templates"]
+        AgentListTemplate["agent_list.html"]
+        AgentFormTemplate["agent_form.html"]
+        AgentDetailTemplate["agent_detail.html"]
+        AgentDeleteTemplate["agent_confirm_delete.html"]
+        
+        %% Task Templates
+        TaskTemplates["Task Templates"]
+        TaskListTemplate["task_list.html"]
+        TaskFormTemplate["task_form.html"]
+        TaskDetailTemplate["task_detail.html"]
+        TaskDeleteTemplate["task_confirm_delete.html"]
+        
+        %% Pipeline Templates
+        PipelineTemplates["Pipeline Templates"]
+        PipelineTemplate["pipeline.html"]
+        ExecuteCrewTemplate["execute_crew.html"]
+        StopExecutionTemplate["stop_execution.html"]
+        ExecutionHistoryTemplate["execution_history.html"]
+    end
+    
+    %% URL Structure
+    subgraph "URLs"
+        RootURL["/crew/"]
+        CrewsURL["/crew/crews/"]
+        CrewCreateURL["/crew/crews/create/"]
+        CrewDetailURL["/crew/crews/:id/"]
+        CrewUpdateURL["/crew/crews/:id/update/"]
+        CrewDeleteURL["/crew/crews/:id/delete/"]
+        
+        AgentsURL["/crew/agents/"]
+        AgentCreateURL["/crew/agents/create/"]
+        AgentDetailURL["/crew/agents/:id/"]
+        AgentUpdateURL["/crew/agents/:id/update/"]
+        AgentDeleteURL["/crew/agents/:id/delete/"]
+        
+        TasksURL["/crew/tasks/"]
+        TaskCreateURL["/crew/tasks/create/"]
+        TaskDetailURL["/crew/tasks/:id/"]
+        TaskUpdateURL["/crew/tasks/:id/update/"]
+        TaskDeleteURL["/crew/tasks/:id/delete/"]
+        
+        PipelineURL["/crew/pipeline/"]
+        ExecuteCrewURL["/crew/crews/:id/execute/"]
+        StopExecutionURL["/crew/crews/:id/stop/"]
+        ExecutionHistoryURL["/crew/crews/:id/history/"]
+    end
+    
+    %% Execution Integration
+    subgraph "CrewAI Integration"
+        CrewAI["CrewAI Library"]
+        CrewClass["Crew"]
+        AgentClass["Agent"]
+        TaskClass["Task"]
+        
+        %% Relationships
+        CrewAI --> CrewClass
+        CrewAI --> AgentClass
+        CrewAI --> TaskClass
+        
+        CrewClass -.->|maps to| CrewInstance
+        AgentClass -.->|maps to| Agent
+        TaskClass -.->|maps to| Task
+    end
+    
+    %% User Flows
+    subgraph "User Flows"
+        %% Authentication Flow
+        AuthFlow["Authentication Flow"]
+        Unauthenticated["Unauthenticated User"]
+        Authenticated["Authenticated User"]
+        Login["Login"]
+        Register["Register"]
+        
+        Unauthenticated -->|login| Login
+        Unauthenticated -->|register| Register
+        Login --> Authenticated
+        Register --> Authenticated
+        
+        %% Crew Creation Flow
+        CrewFlow["Crew Creation Flow"]
+        CreateCrew["Create Crew"]
+        AddAgents["Add Agents"]
+        AddTasks["Add Tasks"]
+        SetupDependencies["Setup Dependencies"]
+        ExecuteCrew["Execute Crew"]
+        
+        CreateCrew --> AddAgents
+        AddAgents --> AddTasks
+        AddTasks --> SetupDependencies
+        SetupDependencies --> ExecuteCrew
+        
+        %% Execution Flow
+        ExecFlow["Execution Flow"]
+        StartExecution["Start Execution"]
+        MonitorStatus["Monitor Status"]
+        ViewResults["View Results"]
+        
+        StartExecution --> MonitorStatus
+        MonitorStatus --> ViewResults
+    end
+    
+    %% Cross-component relationships
+    Models <--> Views
+    Views <--> Templates
+    Models <--> Execution
+    CrewAI <--> Execution 

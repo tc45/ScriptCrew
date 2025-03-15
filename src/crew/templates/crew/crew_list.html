@@ -1,0 +1,76 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Crews - Manage Your Crews{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>My Crews</h1>
+        <a href="{% url 'crew:crew_create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-2"></i>
+            Add New Crew
+        </a>
+    </div>
+
+    <!-- Crews List -->
+    {% if crew_list %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Created</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for crew in crew_list %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'crew:crew_detail' crew.id %}">{{ crew.name }}</a>
+                        </td>
+                        <td>{{ crew.description|truncatechars:50 }}</td>
+                        <td>{{ crew.created_at|date:"M d, Y" }}</td>
+                        <td>
+                            <span class="badge bg-{{ crew.status_class }}">{{ crew.status_display }}</span>
+                        </td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a href="{% url 'crew:crew_detail' crew.id %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="{% url 'crew:crew_update' crew.id %}" class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="{% url 'crew:crew_execute' crew.id %}" class="btn btn-sm btn-outline-success">
+                                    <i class="bi bi-play-fill"></i>
+                                </a>
+                                <a href="{% url 'crew:crew_delete' crew.id %}" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <h4 class="alert-heading">No crews yet!</h4>
+            <p>You haven't created any crews yet. Get started by creating your first crew.</p>
+            <hr>
+            <div class="d-grid gap-2 d-md-flex">
+                <a href="{% url 'crew:crew_create' %}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-2"></i>
+                    Create First Crew
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 

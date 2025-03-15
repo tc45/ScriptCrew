@@ -1,0 +1,80 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold">{{ title }}</h1>
+        <a href="{{ task_detail_url }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+            Back to Task
+        </a>
+    </div>
+
+    {% if messages %}
+    <div class="mb-4">
+        {% for message in messages %}
+        <div class="p-4 mb-4 {% if message.tags == 'success' %}bg-green-100 text-green-700{% elif message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-blue-100 text-blue-700{% endif %} rounded">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="bg-white shadow-md rounded-lg overflow-hidden p-6 mb-6">
+        <h2 class="text-xl font-semibold mb-4">Task Details</h2>
+        <div class="mb-4">
+            <p class="text-gray-700"><strong>Name:</strong> {{ task.name }}</p>
+            <p class="text-gray-700"><strong>Description:</strong> {{ task.description }}</p>
+            <p class="text-gray-700"><strong>Crew:</strong> {{ task.crew.name }}</p>
+            <p class="text-gray-700"><strong>Agent:</strong> {{ task.agent.name }}</p>
+            <p class="text-gray-700"><strong>Status:</strong> 
+                <span class="{% if task.status == 'completed' %}text-green-600{% elif task.status == 'failed' %}text-red-600{% elif task.status == 'in_progress' %}text-blue-600{% else %}text-gray-600{% endif %}">
+                    {{ task.get_status_display }}
+                </span>
+            </p>
+        </div>
+        
+        {% if not dependencies_complete %}
+        <div class="bg-yellow-100 text-yellow-700 p-4 rounded mb-4">
+            <p class="font-semibold">Warning: Dependencies Not Complete</p>
+            <p>This task depends on other tasks that have not been completed:</p>
+            <ul class="list-disc pl-5 mt-2">
+                {% for dep in dependencies %}
+                {% if dep.status != 'completed' %}
+                <li>{{ dep.name }} (Status: {{ dep.get_status_display }})</li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+            <p class="mt-2">Complete these dependencies before executing this task.</p>
+        </div>
+        {% endif %}
+        
+        <div class="mt-6">
+            <h3 class="text-lg font-semibold mb-2">Execution Details</h3>
+            <p class="text-gray-600 mb-4">
+                This will execute the task using the configured agent.
+                The agent will receive the input data and produce output according to the task description.
+            </p>
+            
+            <div class="mb-4">
+                <h4 class="text-md font-medium mb-2">Expected Output:</h4>
+                <div class="bg-gray-100 p-3 rounded">
+                    {{ task.expected_output }}
+                </div>
+            </div>
+            
+            <form method="post" class="mt-6">
+                {% csrf_token %}
+                <div class="flex items-center">
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-4 {% if not dependencies_complete %}opacity-50 cursor-not-allowed{% endif %}" {% if not dependencies_complete %}disabled{% endif %}>
+                        Execute Task
+                    </button>
+                    <span class="text-sm text-gray-500">
+                        This may take some time depending on the task complexity.
+                    </span>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

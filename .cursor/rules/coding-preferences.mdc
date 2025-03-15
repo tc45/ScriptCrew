@@ -5,6 +5,10 @@ alwaysApply: true
 ---
 # Coding Preferences
 
+## Bash preferences
+- Always clear the line before sending a new command
+- Ensure your prompt is clean before executing a command
+
 ## Django-Specific Guidelines
 - Use src/ as the root directory for the project
 - Follow Django's app-based structure with clear separation of concerns

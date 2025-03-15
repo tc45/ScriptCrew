@@ -1,0 +1,79 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Agents - Manage Your Agents{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>My Agents</h1>
+        <!-- Make sure this URL matches the one in urls.py -->
+        <a href="{% url 'crew:agent_create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-2"></i>
+            Add New Agent
+        </a>
+    </div>
+
+    <!-- Agents List -->
+    {% if agent_list %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Role</th>
+                        <th>Crew</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for agent in agent_list %}
+                    <tr>
+                        <td>
+                            <!-- Make sure this URL exists in urls.py -->
+                            <a href="{% url 'crew:agent_detail' agent.id %}">{{ agent.name }}</a>
+                        </td>
+                        <td>{{ agent.role }}</td>
+                        <td>
+                            {% if agent.crew %}
+                                <a href="{% url 'crew:crew_detail' agent.crew.id %}">{{ agent.crew.name }}</a>
+                            {% else %}
+                                <span class="text-muted">No crew assigned</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <!-- Make sure these URLs exist in urls.py -->
+                                <a href="{% url 'crew:agent_detail' agent.id %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="{% url 'crew:agent_update' agent.id %}" class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="{% url 'crew:agent_delete' agent.id %}" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <h4 class="alert-heading">No agents yet!</h4>
+            <p>You haven't created any agents yet. Get started by creating your first agent.</p>
+            <hr>
+            <div class="d-grid gap-2 d-md-flex">
+                <!-- Make sure this URL matches the one in urls.py -->
+                <a href="{% url 'crew:agent_create' %}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-2"></i>
+                    Create First Agent
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 

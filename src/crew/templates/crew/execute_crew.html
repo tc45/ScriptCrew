@@ -1,0 +1,79 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Execute Crew - {{ crew.name }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header Section -->
+    <div class="mb-4">
+        <h1>Execute Crew: {{ crew.name }}</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'crew:index' %}">Crews</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'crew:pipeline_view' %}">Pipeline</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Execute {{ crew.name }}</li>
+            </ol>
+        </nav>
+    </div>
+    
+    <!-- Crew Details -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Crew Details</h5>
+            <p class="card-text">{{ crew.description }}</p>
+            
+            <hr class="my-3">
+            
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <h6>Agents</h6>
+                    <ul class="list-group list-group-flush">
+                        {% for agent in crew.agents.all %}
+                            <li class="list-group-item">{{ agent.name }} - {{ agent.role }}</li>
+                        {% empty %}
+                            <li class="list-group-item text-muted">No agents assigned</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h6>Tasks</h6>
+                    <ul class="list-group list-group-flush">
+                        {% for task in crew.tasks.all %}
+                            <li class="list-group-item">{{ task.name }}</li>
+                        {% empty %}
+                            <li class="list-group-item text-muted">No tasks defined</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Execution Form -->
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Execution Options</h5>
+            
+            <form method="post" action="{% url 'crew:crew_execute' crew.id %}">
+                {% csrf_token %}
+                
+                <!-- Add any execution options here -->
+                
+                <div class="alert alert-warning mt-3">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    This will start execution of the crew. Make sure all agents and tasks are properly configured.
+                </div>
+                
+                <div class="d-flex gap-2 mt-3">
+                    <a href="{% url 'crew:pipeline_view' %}" class="btn btn-outline-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-play-fill me-2"></i>
+                        Execute Crew
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,172 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}
+    {% if object %}
+        Edit Crew: {{ object.name }}
+    {% else %}
+        Create New Crew
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header Section -->
+    <div class="mb-4">
+        <h1>
+            {% if object %}
+                Edit Crew: {{ object.name }}
+            {% else %}
+                Create New Crew
+            {% endif %}
+        </h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'crew:index' %}">Crews</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'crew:crew_list' %}">My Crews</a></li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    {% if object %}Edit{% else %}Create{% endif %}
+                </li>
+            </ol>
+        </nav>
+    </div>
+    
+    <!-- Form Card -->
+    <div class="card">
+        <div class="card-body">
+            <form method="post" novalidate>
+                {% csrf_token %}
+                
+                <!-- Handle form errors -->
+                {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <h5 class="alert-heading">Form Error</h5>
+                        <p>Please correct the errors below:</p>
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <p><strong>{{ field.label }}:</strong> {{ error }}</p>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                
+                <!-- Basic Fields -->
+                <div class="mb-3">
+                    <label for="{{ form.name.id_for_label }}" class="form-label">Name</label>
+                    <input type="text" class="form-control {% if form.name.errors %}is-invalid{% endif %}" 
+                           id="{{ form.name.id_for_label }}" name="{{ form.name.html_name }}" 
+                           value="{{ form.name.value|default:'' }}">
+                    {% if form.name.errors %}
+                        <div class="invalid-feedback">{{ form.name.errors.0 }}</div>
+                    {% endif %}
+                    {% if form.name.help_text %}
+                        <div class="form-text">{{ form.name.help_text }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                    <textarea class="form-control {% if form.description.errors %}is-invalid{% endif %}" 
+                              id="{{ form.description.id_for_label }}" name="{{ form.description.html_name }}" 
+                              rows="3">{{ form.description.value|default:'' }}</textarea>
+                    {% if form.description.errors %}
+                        <div class="invalid-feedback">{{ form.description.errors.0 }}</div>
+                    {% endif %}
+                    {% if form.description.help_text %}
+                        <div class="form-text">{{ form.description.help_text }}</div>
+                    {% endif %}
+                </div>
+                
+                <!-- Is Flow Switch -->
+                <div class="mb-3 form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" 
+                           id="{{ form.is_flow.id_for_label }}" name="{{ form.is_flow.html_name }}"
+                           {% if form.is_flow.value %}checked{% endif %}>
+                    <label class="form-check-label" for="{{ form.is_flow.id_for_label }}">Is a Flow</label>
+                    {% if form.is_flow.help_text %}
+                        <div class="form-text">{{ form.is_flow.help_text }}</div>
+                    {% endif %}
+                </div>
+                
+                <!-- Parent Crew Selection (only if parent_crew field exists) -->
+                {% if form.parent_crew %}
+                <div class="mb-3">
+                    <label for="{{ form.parent_crew.id_for_label }}" class="form-label">Parent Crew</label>
+                    <select class="form-select {% if form.parent_crew.errors %}is-invalid{% endif %}" 
+                            id="{{ form.parent_crew.id_for_label }}" name="{{ form.parent_crew.html_name }}">
+                        <option value="">-- No Parent --</option>
+                        {% for choice in form.parent_crew.field.choices %}
+                            {% if choice.0 %}
+                                <option value="{{ choice.0 }}" {% if form.parent_crew.value|stringformat:"s" == choice.0|stringformat:"s" %}selected{% endif %}>
+                                    {{ choice.1 }}
+                                </option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    {% if form.parent_crew.errors %}
+                        <div class="invalid-feedback">{{ form.parent_crew.errors.0 }}</div>
+                    {% endif %}
+                    {% if form.parent_crew.help_text %}
+                        <div class="form-text">{{ form.parent_crew.help_text }}</div>
+                    {% endif %}
+                </div>
+                {% endif %}
+                
+                <!-- JSON Configuration -->
+                <div class="mb-3">
+                    <label for="{{ form.config.id_for_label }}" class="form-label">Configuration (JSON)</label>
+                    <textarea class="form-control {% if form.config.errors %}is-invalid{% endif %}" 
+                              id="{{ form.config.id_for_label }}" name="{{ form.config.html_name }}" 
+                              rows="10">{{ form.config.value|default:'{}' }}</textarea>
+                    {% if form.config.errors %}
+                        <div class="invalid-feedback">{{ form.config.errors.0 }}</div>
+                    {% endif %}
+                    <div class="form-text">
+                        Enter valid JSON configuration for this crew. Use {} for empty configuration.
+                    </div>
+                </div>
+                
+                <!-- Form Actions -->
+                <div class="d-flex gap-2 mt-4">
+                    <a href="{% url 'crew:crew_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">
+                        {% if object %}Update{% else %}Create{% endif %} Crew
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Load JSON editor enhancement script (optional) -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // You could add JavaScript here to enhance the JSON editor
+        // with syntax highlighting and validation if needed
+        const jsonField = document.getElementById('{{ form.config.id_for_label }}');
+        
+        // Basic JSON validation on form submission
+        document.querySelector('form').addEventListener('submit', function(event) {
+            try {
+                const jsonValue = jsonField.value.trim();
+                if (jsonValue) {
+                    JSON.parse(jsonValue);
+                }
+            } catch (e) {
+                event.preventDefault();
+                alert('Invalid JSON configuration: ' + e.message);
+                jsonField.classList.add('is-invalid');
+                
+                // Add error message
+                let errorDiv = document.createElement('div');
+                errorDiv.className = 'invalid-feedback';
+                errorDiv.textContent = 'Please enter valid JSON: ' + e.message;
+                jsonField.parentNode.appendChild(errorDiv);
+            }
+        });
+    });
+</script>
+{% endblock %} 

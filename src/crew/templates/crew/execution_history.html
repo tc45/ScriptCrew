@@ -1,0 +1,102 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Execution History - {{ crew.name }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1>Execution History: {{ crew.name }}</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'crew:index' %}">Crews</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'crew:pipeline_view' %}">Pipeline</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Execution History</li>
+                </ol>
+            </nav>
+        </div>
+        
+        <div>
+            {% if not crew.is_running %}
+                <form method="post" action="{% url 'crew:crew_execute' crew.id %}" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-play-fill me-2"></i>
+                        Execute Again
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Execution History Table -->
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Execution Records</h5>
+            
+            {% if executions %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Execution ID</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Duration</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for execution in executions %}
+                            <tr>
+                                <td>{{ execution.id }}</td>
+                                <td>{{ execution.started_at|date:"M d, Y H:i:s" }}</td>
+                                <td>
+                                    {% if execution.ended_at %}
+                                        {{ execution.ended_at|date:"M d, Y H:i:s" }}
+                                    {% else %}
+                                        <span class="text-muted">Running</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if execution.duration %}
+                                        {{ execution.duration }}
+                                    {% else %}
+                                        <span class="text-muted">In Progress</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge bg-{{ execution.status_class }}">{{ execution.status_display }}</span>
+                                </td>
+                                <td>
+                                    <a href="#" class="btn btn-sm btn-outline-primary" title="View Details">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    No execution records found for this crew.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Add placeholder for execution details when there's no history yet -->
+    {% if not executions %}
+        <div class="mt-4">
+            <div class="alert alert-secondary">
+                <h5 class="alert-heading">No Execution History</h5>
+                <p>This crew hasn't been executed yet. Use the Execute button to run this crew.</p>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 

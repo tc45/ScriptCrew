@@ -1,0 +1,63 @@
+<!-- This is an example - adapt to your actual navbar structure -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'home' %}">YourApp</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}">Home</a>
+                </li>
+                
+                <!-- Crews dropdown with authentication-specific options -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="crewsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Crews
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="crewsDropdown">
+                        <li><a class="dropdown-item" href="{% url 'crew:index' %}">Crew Home</a></li>
+                        
+                        {% if user.is_authenticated %}
+                            <li><a class="dropdown-item" href="{% url 'crew:crew_list' %}">View Crews</a></li>
+                            <li><a class="dropdown-item" href="{% url 'crew:agent_list' %}">View Agents</a></li>
+                            <li><a class="dropdown-item" href="{% url 'crew:task_list' %}">View Tasks</a></li>
+                            <li><a class="dropdown-item" href="{% url 'crew:pipeline_view' %}">Pipeline View</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'crew:crew_create' %}">Create New Crew</a></li>
+                        {% else %}
+                            <li><a class="dropdown-item" href="{% url 'account_login' %}">Login to Manage Crews</a></li>
+                            <li><a class="dropdown-item" href="{% url 'account_signup' %}">Register</a></li>
+                        {% endif %}
+                    </ul>
+                </li>
+                
+                <!-- Other navigation items -->
+            </ul>
+            
+            <!-- User authentication links -->
+            <ul class="navbar-nav ms-auto">
+                {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ user.username }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="{% url 'account_profile' %}">Profile</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'account_logout' %}">Logout</a></li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'account_login' %}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'account_signup' %}">Register</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav> 
